@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
+	"time"
 
 	"github.com/AdiPP/go/library-api/pkg/models"
 )
@@ -21,6 +23,10 @@ func (h handler) AddBook(w http.ResponseWriter, r *http.Request) {
 
 	var book models.Book
 	json.Unmarshal(body, &book)
+
+	// Set book Id
+	rand.Seed(time.Now().UnixNano())
+	book.Id = rand.Intn(100)
 
 	// Append to Book mocks
 	// book.Id = rand.Intn(100)

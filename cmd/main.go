@@ -7,10 +7,10 @@ import (
 	"github.com/AdiPP/go/library-api/pkg/db"
 	"github.com/AdiPP/go/library-api/pkg/handlers"
 	"github.com/gorilla/mux"
+	"gorm.io/gorm"
 )
 
-func main () {
-	DB := db.Init()
+func Routes(DB *gorm.DB) *mux.Router {
 	h := handlers.New(DB)
 	router := mux.NewRouter()
 
@@ -32,6 +32,13 @@ func main () {
 
 	// Delete Book
 	router.HandleFunc("/books/{book}", h.DeleteBook).Methods(http.MethodDelete)
+
+	return router
+}
+
+func main () {
+	DB := db.Init()
+	router := Routes(DB)
 
 	log.Println("API is running!")
 	http.ListenAndServe(":8000", router)
