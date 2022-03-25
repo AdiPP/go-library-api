@@ -2,16 +2,15 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
-	"math/rand"
 	"net/http"
 
-	"github.com/AdiPP/go/library-api/pkg/mocks"
 	"github.com/AdiPP/go/library-api/pkg/models"
 )
 
-func AddBook(w http.ResponseWriter, r *http.Request) {
+func (h handler) AddBook(w http.ResponseWriter, r *http.Request) {
 	// Read to request body
 	defer r.Body.Close()
 	body, err := io.ReadAll(r.Body)
@@ -24,8 +23,13 @@ func AddBook(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(body, &book)
 
 	// Append to Book mocks
-	book.Id = rand.Intn(100)
-	mocks.Books = append(mocks.Books, book)
+	// book.Id = rand.Intn(100)
+	// mocks.Books = append(mocks.Books, book)
+
+	// Append to the books table
+	if result := h.DB.Create(&book); result.Error != nil {
+		fmt.Println(result.Error)
+	}
 
 	// Send a 201 created response
 	w.Header().Add("Content-Type", "application/json")
